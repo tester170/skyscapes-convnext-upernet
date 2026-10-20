@@ -1,0 +1,28 @@
+{
+ "repo": "tester170/skyscapes-convnext-upernet",
+ "tag": "v1.0",
+ "release": {
+  "model": {
+   "name": "convnext_b_upernet_skyscapes_ep48.pth",
+   "size": 488234650,
+   "sha256": "e70f82538ac4d157e2441a684a3e900ead326e5abab427eda2107620eccc141e"
+  },
+  "mmcv": {
+   "name": "mmcv-2.1.0-cp311-cp311-manylinux1_x86_64.whl",
+   "size": 323304127,
+   "sha256": "1f973d965e3190072cb289d75879c0e02efd6b251aca66a3055acc56ef078b9c"
+  }
+ },
+ "mmcv_official": "https://download.openmmlab.com/mmcv/dist/cu121/torch2.1.0/mmcv-2.1.0-cp311-cp311-manylinux1_x86_64.whl",
+ "dataset_official": {
+  "url": "https://pba-freesoftware.eoc.dlr.de/SkyScapes.zip",
+  "name": "SkyScapes.zip",
+  "size": 287938191,
+  "sha256": "f786046ea4b0c5b09fc38cfffa668f60c9c5a5258b7df5a204d2f63ea7d05bd6",
+  "inner": "ZIP/SS_Dense.zip"
+ },
+ "dinov3": {
+  "repo": "https://github.com/facebookresearch/dinov3",
+  "commit": "6876159a11b4df116f30f667f8c9888617df0751"
+ }
+}

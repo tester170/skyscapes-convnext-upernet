@@ -1,0 +1,5 @@
+checkpoints/
+wheels/
+vendor/
+__pycache__/
+*.part
