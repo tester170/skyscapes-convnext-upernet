@@ -14,7 +14,7 @@
 ## Подготовка (Linux, GPU NVIDIA)
 ```bash
 git clone https://github.com/tester170/skyscapes-convnext-upernet.git && cd skyscapes-convnext-upernet
-bash env/setup_env.sh /opt/py311          # окружение эксперимента: Python 3.11, PyTorch 2.1.0, MMCV 2.1.0, MMSegmentation 1.2.2
+bash env/setup_env.sh ~/py311          # окружение эксперимента: Python 3.11, PyTorch 2.1.0, MMCV 2.1.0, MMSegmentation 1.2.2
 bash env/fetch_vendor.sh                   # код DINOv3, MsRE и Rein на коммитах эксперимента -> vendor/
 git clone --depth 1 --branch v1.2.2 https://github.com/open-mmlab/mmsegmentation.git ../mmsegmentation   # tools/train.py, tools/test.py
 python3 scripts/fetch.py dataset --out data   # набор DLR SkyScapes -> data/SS_Dense (официальный сервер DLR)
@@ -27,15 +27,15 @@ curl -L -o checkpoints/segformer_b0_skyscapes_ep220.pth \n    https://github.com
 
 ## Оценка
 ```bash
-PYTHONPATH=. /opt/py311/bin/python ../mmsegmentation/tools/test.py \
+PYTHONPATH=. ~/py311/bin/python ../mmsegmentation/tools/test.py \
     configs/skyscapes/dinov3-convnext-b_upernet_1xb2-amp_skyscapes-1024x1024.py checkpoints/convnext_b_upernet_skyscapes_ep48.pth
 ```
 Оценка выполняется, как в отчёте: валидационные снимки целиком, скользящее окно 1024 × 1024 с шагом 768, fp32 (у Rein замороженный ViT в fp16, декодер в fp32). Для MsRE и Rein нужен код авторов в `vendor/` (`env/fetch_vendor.sh`).
 
 ## Обучение
 ```bash
-PYTHONPATH=. /opt/py311/bin/python scripts/prepare_dinov3_weights.py   # начальные веса DINOv3 -> checkpoints/ (не нужно для SegFormer-B0)
-PYTHONPATH=. /opt/py311/bin/python ../mmsegmentation/tools/train.py \
+PYTHONPATH=. ~/py311/bin/python scripts/prepare_dinov3_weights.py   # начальные веса DINOv3 -> checkpoints/ (не нужно для SegFormer-B0)
+PYTHONPATH=. ~/py311/bin/python ../mmsegmentation/tools/train.py \
     configs/skyscapes/dinov3-convnext-b_upernet_1xb2-amp_skyscapes-1024x1024.py --work-dir work_dirs/convnext_b_upernet
 ```
 Начальные веса: SegFormer-B0 — кодировщик `mit_b0_loveda_encoder.pth` из [релиза SegFormer-B0](https://github.com/tester170/skyscapes-segformer-b0/releases/tag/v1.0); остальные модели — DINOv3 LVD-1689M, которые `scripts/prepare_dinov3_weights.py` скачивает с Hugging Face (репозитории timm, с проверкой SHA-256) и переводит в форматы авторских реализаций теми же преобразованиями, что в эксперименте (результат совпадает с файлами эксперимента тензор в тензор).

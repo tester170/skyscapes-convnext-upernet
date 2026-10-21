@@ -38,14 +38,14 @@ my_data/
 ## Без блокнота (Linux с GPU NVIDIA)
 ```bash
 git clone --branch v1.0 https://github.com/tester170/skyscapes-convnext-upernet.git && cd skyscapes-convnext-upernet
-bash env/setup_env.sh /opt/py311                      # окружение Python 3.11 и код DINOv3
+bash env/setup_env.sh ~/py311                      # окружение Python 3.11 и код DINOv3
 python3 scripts/fetch.py model                        # веса модели из релиза
-/opt/py311/bin/python scripts/infer.py --input <снимок или папка> --out <папка> --schemes 9 6 5 --fp16
-/opt/py311/bin/python scripts/prepare_own.py --data my_data --cache <кэш>              # свои данные
-/opt/py311/bin/python scripts/train.py --cache <кэш> --work-dir <папка запуска>         # дообучение
-/opt/py311/bin/python scripts/evaluate.py --cache <кэш> --checkpoint <best_mIoU_epoch_N.pth> --out <папка>
+~/py311/bin/python scripts/infer.py --input <снимок или папка> --out <папка> --schemes 9 6 5 --fp16
+~/py311/bin/python scripts/prepare_own.py --data my_data --cache <кэш>              # свои данные
+~/py311/bin/python scripts/train.py --cache <кэш> --work-dir <папка запуска>         # дообучение
+~/py311/bin/python scripts/evaluate.py --cache <кэш> --checkpoint <best_mIoU_epoch_N.pth> --out <папка>
 python3 scripts/fetch.py dataset --out /data          # набор SkyScapes -> /data/SS_Dense
-/opt/py311/bin/python scripts/prepare_data.py --data /data/SS_Dense --cache <кэш SkyScapes>
+~/py311/bin/python scripts/prepare_data.py --data /data/SS_Dense --cache <кэш SkyScapes>
 ```
 
 ## Конфигурации MMSegmentation
