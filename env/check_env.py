@@ -39,8 +39,10 @@ try:
     assert njit(lambda x: x + 1)(1) == 2
     bundle = Path(__file__).resolve().parents[1]
     sys.path.insert(0, str(bundle))
-    head = (bundle / 'vendor' / 'dinov3' / '.git' / 'HEAD')          # detached HEAD = the pinned commit
-    assert head.exists() and head.read_text().startswith(DINO_COMMIT), 'official DINOv3 code missing (env/setup_env.sh)'
+    import subprocess
+    head = subprocess.run(['git', '-C', str(bundle / 'vendor' / 'dinov3'), 'rev-parse', 'HEAD'],
+                          capture_output=True, text=True).stdout.strip()       # works for a detached or a branch HEAD
+    assert head == DINO_COMMIT, f'official DINOv3 code at {DINO_COMMIT[:7]} missing in vendor/dinov3 (env/setup_env.sh)'
     from mmseg.utils import register_all_modules
     register_all_modules(init_default_scope=True)
     import skyscapes_mmseg  # noqa: F401
