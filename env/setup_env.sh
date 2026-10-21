@@ -22,21 +22,31 @@ fi
 if [ -x "$PY" ] && "$PY" "$BUNDLE/env/check_env.py" --quiet; then
   echo "environment is ready: $ENV"; exit 0
 fi
-echo "== installing uv (Python and package installer)"
-python3 -m pip install -q "uv>=0.4" || pip install -q "uv>=0.4"
+# uv (Python and package installer): an installed one, else from pip, else the official standalone installer into
+# .uv/ of the repository (plain Linux without pip, e.g. a fresh Ubuntu 24.04)
+if command -v uv >/dev/null 2>&1; then UV=uv
+elif python3 -m uv --version >/dev/null 2>&1; then UV="python3 -m uv"
+else
+  echo "== installing uv (Python and package installer)"
+  if python3 -m pip install -q "uv>=0.4" 2>/dev/null      || python3 -m pip install -q --user --break-system-packages "uv>=0.4" 2>/dev/null; then UV="python3 -m uv"
+  else
+    curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="$BUNDLE/.uv" INSTALLER_NO_MODIFY_PATH=1 sh >/dev/null
+    UV="$BUNDLE/.uv/uv"
+  fi
+fi
 echo "== creating Python 3.11 environment in $ENV"
-python3 -m uv venv --python 3.11 --seed "$ENV"
+$UV venv --python 3.11 --seed "$ENV"
 echo "== installing pinned packages (PyTorch 2.1.0 cu121, MMEngine, MMSegmentation, ...): ~2-3 min"
-python3 -m uv pip install --python "$PY" --no-deps --index-strategy unsafe-best-match \
+$UV pip install --python "$PY" --no-deps --index-strategy unsafe-best-match \
   --extra-index-url https://download.pytorch.org/whl/cu121 -r "$BUNDLE/env/requirements.lock"
 echo "== installing MMCV 2.1.0 (prebuilt for torch 2.1 / CUDA 12.1)"
 WHEEL="$BUNDLE/wheels/mmcv-2.1.0-cp311-cp311-manylinux1_x86_64.whl"
 if [ -f "$WHEEL" ] || python3 "$BUNDLE/scripts/fetch.py" mmcv --out "$WHEEL"; then   # project release, else OpenMMLab
-  python3 -m uv pip install --python "$PY" --no-deps "$WHEEL"
+  $UV pip install --python "$PY" --no-deps "$WHEEL"
 else   # last resort: compile MMCV 2.1.0 against the installed torch (needs nvcc; ~30 min)
   echo "== OpenMMLab server unavailable: building MMCV 2.1.0 from source (about 30 minutes)"
-  python3 -m uv pip install --python "$PY" ninja==1.11.1.1
+  $UV pip install --python "$PY" ninja==1.11.1.1
   MMCV_WITH_OPS=1 FORCE_CUDA=1 MAX_JOBS="$(nproc)" PATH="$ENV/bin:/usr/local/cuda/bin:$PATH" \
-    python3 -m uv pip install --python "$PY" --no-deps --no-build-isolation --no-binary mmcv mmcv==2.1.0
+    $UV pip install --python "$PY" --no-deps --no-build-isolation --no-binary mmcv mmcv==2.1.0
 fi
 "$PY" "$BUNDLE/env/check_env.py"

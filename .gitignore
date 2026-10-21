@@ -5,3 +5,4 @@ __pycache__/
 *.part
 data/
 work_dirs/
+.uv/
