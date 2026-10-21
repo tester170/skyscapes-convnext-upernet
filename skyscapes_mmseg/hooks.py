@@ -48,6 +48,8 @@ class PlateauControlHook(Hook):
 
     def _save_confusion(self, runner, metrics):
         from .patches import TRAIN_CONFUSION as tc
+        if not hasattr(runner.val_evaluator.metrics[0], 'last_frames'):    # standard IoUMetric: nothing to save
+            return
         frames = runner.val_evaluator.metrics[0].last_frames
         out = Path(runner.work_dir) / 'val_confusion'
         out.mkdir(exist_ok=True)

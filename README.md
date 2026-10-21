@@ -29,6 +29,8 @@ my_data/
 |---|---|
 | `convnext_b_upernet_skyscapes_ep48.pth` | обученная модель (чекпойнт MMSegmentation 1.2.2, эпоха 48) |
 | `mmcv-2.1.0-cp311-cp311-manylinux1_x86_64.whl` | официальная сборка MMCV 2.1.0 OpenMMLab для torch 2.1 / CUDA 12.1 |
+| `msre_dinov3_vitl16_skyscapes_ep63.pth` | MsRE (DINOv3 ViT-L + Segmenter), эпоха 63 — для `configs/skyscapes/` |
+| `rein_dinov3_vitl16_m2f_skyscapes_ep30.pth` | Rein (DINOv3 ViT-L + Mask2Former), эпоха 30 — для `configs/skyscapes/` |
 | `LICENSE_DINOv3.md` | лицензия DINOv3 |
 
 Контрольные суммы — в `env/assets.json`; `scripts/fetch.py` проверяет каждый скачанный файл. Код DINOv3 берётся из официального репозитория facebookresearch/dinov3 на зафиксированной версии, набор SkyScapes — с официального сервера DLR.
@@ -45,6 +47,9 @@ python3 scripts/fetch.py model                        # веса модели и
 python3 scripts/fetch.py dataset --out /data          # набор SkyScapes -> /data/SS_Dense
 /opt/py311/bin/python scripts/prepare_data.py --data /data/SS_Dense --cache <кэш SkyScapes>
 ```
+
+## Конфигурации MMSegmentation
+В `configs/skyscapes/` — конфигурации всех четырёх моделей отчёта (SegFormer-B0, DINOv3 ConvNeXt-B + UPerNet, MsRE, Rein) в формате MMSegmentation 1.2.2 для штатных `tools/train.py` и `tools/test.py`; с весами из релизов они воспроизводят mIoU отчёта (36,33 / 43,27 / 35,70 / 41,17 %). Подготовка, оценка и обучение описаны в `configs/skyscapes/README_RU.md`.
 
 ## Модель
 DINOv3 ConvNeXt-B + UPerNet, 122 млн параметров, 20 классов, патчи 1024, лучшая эпоха 48. Валидационная выборка SkyScapes: mIoU 43,3 % (20 классов), κ = 0,791, OA 82,6 %; при укрупнении до 9 классов — 67,8 %, до 6 (ISPRS) — 76,5 %, до 5 — 80,7 %. Тестовая выборка SkyScapes опубликована без эталонной разметки, поэтому качество оценено по валидационной. Подробнее — `MODEL_CARD_RU.md`.

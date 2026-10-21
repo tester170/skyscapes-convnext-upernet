@@ -11,6 +11,16 @@
    "name": "mmcv-2.1.0-cp311-cp311-manylinux1_x86_64.whl",
    "size": 323304127,
    "sha256": "1f973d965e3190072cb289d75879c0e02efd6b251aca66a3055acc56ef078b9c"
+  },
+  "msre": {
+   "name": "msre_dinov3_vitl16_skyscapes_ep63.pth",
+   "size": 1344735954,
+   "sha256": "dda3a100e85e3fc563929c590567ad46d81f1e922288984342e00c6025789988"
+  },
+  "rein": {
+   "name": "rein_dinov3_vitl16_m2f_skyscapes_ep30.pth",
+   "size": 1307479758,
+   "sha256": "6b0fe8dae5a26e387625083bfaf69b74a83bd7ac56c519d24bee1e9908e2439f"
   }
  },
  "mmcv_official": "https://download.openmmlab.com/mmcv/dist/cu121/torch2.1.0/mmcv-2.1.0-cp311-cp311-manylinux1_x86_64.whl",

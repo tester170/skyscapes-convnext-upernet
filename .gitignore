@@ -3,3 +3,5 @@ wheels/
 vendor/
 __pycache__/
 *.part
+data/
+work_dirs/

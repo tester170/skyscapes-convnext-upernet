@@ -1,11 +1,13 @@
 """Download the large files of the project from its GitHub release and verify their SHA-256 (standard library only).
 
   model    trained DINOv3 ConvNeXt-B + UPerNet (epoch 48)  -> checkpoints/convnext_b_upernet_skyscapes_ep48.pth
+  msre     MsRE (DINOv3 ViT-L + Segmenter, epoch 63)       -> checkpoints/msre_dinov3_vitl16_skyscapes_ep63.pth
+  rein     Rein (DINOv3 ViT-L + Mask2Former, epoch 30)     -> checkpoints/rein_dinov3_vitl16_m2f_skyscapes_ep30.pth
   mmcv     MMCV 2.1.0 wheel (torch 2.1, CUDA 12.1, cp311)   -> official OpenMMLab build; OpenMMLab server as fallback
   dataset  SS_Dense of DLR SkyScapes (train/val/test)       -> <out>/SS_Dense, from the official DLR server
 Repository, tag, file names and checksums are in env/assets.json. Files already present with the right checksum are
 not downloaded again.
-Usage: python scripts/fetch.py model|mmcv [--out FILE] | python scripts/fetch.py dataset --out FOLDER"""
+Usage: python scripts/fetch.py model|msre|rein|mmcv [--out FILE] | python scripts/fetch.py dataset --out FOLDER"""
 import argparse
 import hashlib
 import io
@@ -21,6 +23,8 @@ from pathlib import Path
 BUNDLE = Path(__file__).resolve().parents[1]
 ASSETS = json.loads((BUNDLE / 'env' / 'assets.json').read_text(encoding='utf-8'))
 DEFAULT_OUT = {'model': BUNDLE / 'checkpoints' / 'convnext_b_upernet_skyscapes_ep48.pth',
+               'msre': BUNDLE / 'checkpoints' / 'msre_dinov3_vitl16_skyscapes_ep63.pth',
+               'rein': BUNDLE / 'checkpoints' / 'rein_dinov3_vitl16_m2f_skyscapes_ep30.pth',
                'mmcv': BUNDLE / 'wheels' / 'mmcv-2.1.0-cp311-cp311-manylinux1_x86_64.whl'}
 
 
@@ -99,8 +103,8 @@ def dataset(root):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('what', choices=('model', 'mmcv', 'dataset'))
-    ap.add_argument('--out', help='target file (model, mmcv) or folder that receives SS_Dense (dataset)')
+    ap.add_argument('what', choices=('model', 'msre', 'rein', 'mmcv', 'dataset'))
+    ap.add_argument('--out', help='target file (model, msre, rein, mmcv) or folder that receives SS_Dense (dataset)')
     a = ap.parse_args()
     if a.what == 'dataset':
         dataset(a.out or BUNDLE.parent / 'data')
